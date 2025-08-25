@@ -59,7 +59,7 @@ class Modelloader:
 
 
 
-ml = Modelloader()
+"""ml = Modelloader()
 ml.load_embeddings()
 llm = ml.load_llm()
-print(llm.invoke("where is hyderabad?"))
+print(llm.invoke("where is hyderabad?"))"""

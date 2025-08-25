@@ -1,16 +1,16 @@
 faiss_db:
-  collection_name:"document_analysis"
+  collection_name: "document_analysis"
 
 embedding_model:
-  provider:"google"
-  model_name:"models/embedding-001"
+  provider: "google"
+  model_name: "models/embedding-001"
 
 retriver:
-  top_k:10
+  top_k: 10
 
 llm:
   groq:
-    provider:"groq"
-    model_name:"qwen/qwen3-32b"
-    temprature:0
-    max_output_tokens:2048
+    provider: "groq"
+    model_name: "qwen/qwen3-32b"
+    temprature: 0
+    max_output_tokens: 2048

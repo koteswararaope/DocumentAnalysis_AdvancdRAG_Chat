@@ -3,7 +3,7 @@ from utils.model_loader import Modelloader
 from logger.custom_struct_logger import CustomStructLogger
 from exception.custom_exception import DocumentPortalException
 
-from langchain_groq import Chatgroq
+from langchain_groq import ChatGroq
 from langchain_core.output_parsers import JsonOutputParser
 from langchain.output_parsers import OutputFixingParser
 from model.models import DocMetadata
@@ -20,7 +20,7 @@ class DocumentAnalyzer:
             
             #parser
             self.parser = JsonOutputParser(pydantic_object=DocMetadata)
-            self.fixing_parser = OutputFixingParser(llm=self.llm,parser=self.parser)
+            self.fixing_parser = OutputFixingParser.from_llm(llm=self.llm,parser=self.parser)
             self.prompt = prompt
             
             self.logger.info("DocumentAnalyzer intialized sucessfully")

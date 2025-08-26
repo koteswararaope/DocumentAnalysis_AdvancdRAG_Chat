@@ -14,7 +14,7 @@ from langchain.output_parsers import OutputFixingParser
 class DocumentComparatorusingLLM:
     def __init__(self):
         load_dotenv()
-        self.logger = CustomStructLogger().get_logger()
+        self.logger = CustomStructLogger().get_logger(__name__)
         self.loader = Modelloader()
         self.llm = self.loader.load_llm()
         self.parser =JsonOutputParser(pydantic_object=SummaryResponse)

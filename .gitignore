@@ -1,6 +1,7 @@
 env
 env/
 .env
+.venv
 document_portal.egg-info
 _pycache_/
 logs/

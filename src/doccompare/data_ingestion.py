@@ -22,3 +22,5 @@ class DatainjectionComparator:
         """read the pdf files
         """
         pass 
+    
+    

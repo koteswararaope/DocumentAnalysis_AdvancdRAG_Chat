@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field,RootModel
 from typing import Optional,List,Dict,Any,Union
 
 class DocMetadata(BaseModel):
@@ -15,3 +15,6 @@ class DocMetadata(BaseModel):
 class ChangeFormat(BaseModel):
     page:str
     change:str
+
+class SummaryResponse(RootModel[list[ChangeFormat]]):
+    pass

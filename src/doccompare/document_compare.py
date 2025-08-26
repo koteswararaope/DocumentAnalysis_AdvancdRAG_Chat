@@ -23,20 +23,28 @@ class DocumentComparatorusingLLM:
         self.chain =self.prompt|self.llm|self.parser|self.fixingparser
         self.logger.info("DocumentComparatorusingLLM is intialized")
     
-    def comapre_documnets(self):
+    def comapre_documnets(self, combined_docs:str):
         """Compare two documents and return the structured output
         """
         try:
-            pass
+            inputs ={
+                "combined_docs":combined_docs,
+                "format_instruction": self.parser.get_format_instructions()
+            }
+            self.logger.info("started document comparison", inputs=inputs)
+            response= self.chain.invoke(inputs)
+            return self._format_reaponse(response)
         except Exception as e:
             self.logger.error("comapre_documnets has thrown an exception",str(e))
             raise DocumentPortalException("comapre_documnets has thrown an exception",e)
     
-    def _format_reaponse(self):
+    def _format_reaponse(self,response_parsed:list[dict]) -> pd.DataFrame:
         """format response from llm intoa structured format
         """
         try:
-            pass
+            df = pd.DataFrame(response_parsed)
+            self.logger.info("Response formated into data frame", data=df)
+            return df
         except Exception as e:
             self.logger.error("_format_reaponse has thrown an exception",str(e))
             raise DocumentPortalException("_format_reaponse has thrown an exception",e)

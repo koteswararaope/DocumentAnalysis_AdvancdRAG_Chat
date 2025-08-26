@@ -7,7 +7,7 @@ from langchain_groq import ChatGroq
 from langchain_core.output_parsers import JsonOutputParser
 from langchain.output_parsers import OutputFixingParser
 from model.models import DocMetadata
-from prompt.prompt_library import *
+from prompt.prompt_library import PROMPT_REGISTRY
 class DocumentAnalyzer:
     """Analyze the document using a pretrained LLM and log all the actions
     """
@@ -21,7 +21,7 @@ class DocumentAnalyzer:
             #parser
             self.parser = JsonOutputParser(pydantic_object=DocMetadata)
             self.fixing_parser = OutputFixingParser.from_llm(llm=self.llm,parser=self.parser)
-            self.prompt = prompt
+            self.prompt = PROMPT_REGISTRY["document_analysis"]
             
             self.logger.info("DocumentAnalyzer intialized sucessfully")
         except Exception as e:

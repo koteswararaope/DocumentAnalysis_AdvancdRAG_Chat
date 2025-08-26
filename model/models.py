@@ -10,4 +10,8 @@ class DocMetadata(BaseModel):
     Publisher:str
     Language:str
     Pagecount: Union[int,str]
-    
+
+
+class ChangeFormat(BaseModel):
+    page:str
+    change:str

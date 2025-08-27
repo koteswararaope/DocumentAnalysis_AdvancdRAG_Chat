@@ -3,11 +3,17 @@ from pathlib import Path
 import fitz
 from logger.custom_struct_logger import CustomStructLogger
 from exception.custom_exception import DocumentPortalException
+from datetime import datetime
+import uuid
+import os
+import shutil
 
 class DatainjectionComparator:
-    def __init__(self,base_dir:str =r"data\document_compare"):
+    def __init__(self,base_dir:str =r"data\document_compare", session_id=None):
         self.logger= CustomStructLogger().get_logger(__name__)
         self.base_dir = Path(base_dir)
+        self.session_id = session_id or f"session_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
+        self.base_dir= Path(os.path.join(self.base_dir,self.session_id))
         self.base_dir.mkdir(parents=True,exist_ok=True)
     
     def delete_existing_files(self, ):
@@ -28,7 +34,7 @@ class DatainjectionComparator:
         """save uploaded files to a specific directory
         """
         try:
-            self.delete_existing_files()
+            #self.delete_existing_files()
             
             ref_path=self.base_dir/reference_file.name
             act_path=self.base_dir/actual_file.name
@@ -85,3 +91,15 @@ class DatainjectionComparator:
         except Exception as e:
             self.logger.error("error combining the documents %s", str(e))
             raise DocumentPortalException("an error occured while combining the documents",sys)
+    
+    def clean_old_sessions(self,base_dir:str =r"data\document_compare",keep_latest=3):
+        sessions = [os.path.join(base_dir, f) for f in os.listdir(base_dir)]
+        sessions = [f for f in sessions if os.path.isdir(f)]  # keep only directories (sessions)
+
+        # Sort by last modified time (newest first)
+        sessions.sort(key=os.path.getmtime, reverse=True)
+
+        # Keep only the first `keep`, delete the rest
+        for old_session in sessions[keep_latest:]:
+            print(f"Deleting: {old_session}")  # ✅ Safety log
+            shutil.rmtree(old_session)

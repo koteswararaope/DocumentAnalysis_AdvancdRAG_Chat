@@ -46,8 +46,8 @@ class CustomStructLogger:
 
         return structlog.get_logger(logger_name)
 
-if __name__ =="__main__":
+'''if __name__ =="__main__":
     loger = CustomStructLogger()
     logger = loger.get_logger(__file__)
     logger.info("custom logger is intialized")
-    logger.error("error log in struct format")
+    logger.error("error log in struct format")'''

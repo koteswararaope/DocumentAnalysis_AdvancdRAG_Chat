@@ -58,6 +58,7 @@ def test_compare_document():
     
     ref_file, act_file = datainjection.save_uploaded_files(ref_upload,act_upload)
     combined_text= datainjection.combined_documents()
+    datainjection.clean_old_sessions(keep_latest=3)
     
     print("\n combined text 100 char \n")
     print(combined_text[:1000])

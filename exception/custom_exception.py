@@ -1,12 +1,12 @@
 import sys
 import traceback
 
-from logger.custom_logger import CustomLogger
+from logger.custom_struct_logger import CustomStructLogger
 
-logger = CustomLogger().get_logger(__file__)
+logger = CustomStructLogger().get_logger(__file__)
 
 class DocumentPortalException(Exception):
-    def __init__(self, error_message, error_details:sys):
+    def __init__(self, error_message, error_details):
         _,_,err_details = error_details.exc_info()
         self.filename = err_details.tb_frame.f_code.co_filename
         self.lineno = err_details.tb_lineno

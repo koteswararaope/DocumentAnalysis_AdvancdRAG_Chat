@@ -20,7 +20,7 @@ class DocumentComparatorusingLLM:
         self.parser =JsonOutputParser(pydantic_object=SummaryResponse)
         self.fixingparser = OutputFixingParser.from_llm(llm=self.llm,parser=self.parser)
         self.prompt= PROMPT_REGISTRY["document_comparison"]
-        self.chain =self.prompt|self.llm|self.parser|self.fixingparser
+        self.chain =self.prompt|self.llm|self.fixingparser
         self.logger.info("DocumentComparatorusingLLM is intialized")
     
     def comapre_documnets(self, combined_docs:str):
@@ -35,8 +35,8 @@ class DocumentComparatorusingLLM:
             response= self.chain.invoke(inputs)
             return self._format_reaponse(response)
         except Exception as e:
-            self.logger.error("comapre_documnets has thrown an exception",str(e))
-            raise DocumentPortalException("comapre_documnets has thrown an exception",e)
+            self.logger.error("comapre_documnets has thrown an exception{e}")
+            raise DocumentPortalException("comapre_documnets has thrown an exception",sys)
     
     def _format_reaponse(self,response_parsed:list[dict]) -> pd.DataFrame:
         """format response from llm intoa structured format
@@ -46,5 +46,5 @@ class DocumentComparatorusingLLM:
             self.logger.info("Response formated into data frame", data=df)
             return df
         except Exception as e:
-            self.logger.error("_format_reaponse has thrown an exception",str(e))
-            raise DocumentPortalException("_format_reaponse has thrown an exception",e)
+            self.logger.error("_format_reaponse has thrown an exception{e}")
+            raise DocumentPortalException("_format_reaponse has thrown an exception",sys)

@@ -5,8 +5,8 @@ document_portal.egg-info/dependency_links.txt
 document_portal.egg-info/top_level.txt
 exception/__init__.py
 exception/custom_exception.py
+logger/__custom_logger.py
 logger/__init__.py
-logger/custom_logger.py
 logger/custom_struct_logger.py
 model/__init__.py
 model/models.py
@@ -21,6 +21,8 @@ src/doccompare/data_ingestion.py
 src/doccompare/document_compare.py
 src/multidocchat/__init__.py
 src/singledocchat/__init__.py
+src/singledocchat/data_ingestion.py
+src/singledocchat/retrieval.py
 utils/LLM_utils.py
 utils/__init__.py
 utils/config_loader.py

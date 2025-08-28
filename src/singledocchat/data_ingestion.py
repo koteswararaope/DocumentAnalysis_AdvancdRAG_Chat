@@ -57,7 +57,7 @@ class Singledocingestor:
             self.logger("vector store ios saved locally ", saved_path= str(self.faiss_dir))
             
             retriver = vector_store.as_retriever(search_type ="similarity", search_kwargs={"k":5})
-            self.logger("retriver is created for vector data base")
+            self.logger("retriver is created for")
             return retriver
         
         except Exception as e:

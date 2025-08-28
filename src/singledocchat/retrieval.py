@@ -11,40 +11,77 @@ from utils.model_loader import Modelloader
 from exception.custom_exception import DocumentPortalException
 from logger.custom_struct_logger import CustomStructLogger
 from prompt.prompt_library import PROMPT_REGISTRY
-
+from model.models import PromptType
 
 class ConversationalRAG:
     def __init__(self, session_id:str, retriever):
         try:
             self.logger = CustomStructLogger().get_logger(__name__)
+            self.session_id = session_id
+            self.retriever= retriever
+            self.llm = self._load_llm()
+            self.context_prompt = PROMPT_REGISTRY[PromptType.CONTEXTUALIZE_QUESTION.value]
+            self.qa_prompt= PROMPT_REGISTRY[PromptType.CONTEXT_QA.value]
+            self.history_aware_retriver = create_history_aware_retriever(
+                self.llm, self.retriever, self.context_prompt
+                )
+            self.logger.info("Created history_aware_retriver")
+            self.qa_chain = create_stuff_documents_chain(llm=self.llm,prompt=self.qa_prompt)
+            self.rag_chain = create_retrieval_chain(self.history_aware_retriver,self.qa_chain)
+            self.logger.info("Initialized Conversational RAG", session_id=self.session_id)
+            self.chain= RunnableWithMessageHistory(
+                self.rag_chain,
+                self._get_session_history,
+                input_messages_key="input",
+                history_messages_key="chat_history",
+                output_messages_key="answer"
+            )
+            
         except Exception as e:
-            self.logger("ConversationalRAG Intialization has Failed", error =str(e))
+            self.logger.error("ConversationalRAG Intialization has Failed", error =str(e))
             raise DocumentPortalException("ConversationalRAG Intialization has Failed",sys)
     
     def _load_llm(self):
         try:
-            pass
+            llm = Modelloader().load_llm()
+            self.logger.info("LLM loaded sucessfully", class_name= llm.__class__.__name__)
+            return llm
         except Exception as e:
-            self.logger("_load_llm  has Failed", error =str(e))
+            self.logger.error("_load_llm  has Failed", error =str(e))
             raise DocumentPortalException("_load_llm  has Failed",sys)
         
     def _get_session_history(self,session_id:str):
         try:
             pass
         except Exception as e:
-            self.logger("_get_session_history  has Failed", error =str(e))
+            self.logger.error("_get_session_history  has Failed", error =str(e))
             raise DocumentPortalException("_get_session_history has Failed",sys)
         
-    def load_retriver_from_faiss(self):
+    def load_retriver_from_faiss(self,index_path :str):
         try:
-            pass
+            embeddings_model = Modelloader().load_embeddings()
+            if not os.path.isdir(index_path):
+                raise FileNotFoundError(f"Vector store is not found {index_path}")
+            
+            vector_store =FAISS.load_local(folder_path=index_path,embeddings=embeddings_model)
+            self.logger.info("vector db is loaded sucessfully")
+            return vector_store.as_retriever(search_type ="similarity",search_kwargs={"k",5})
+            
         except Exception as e:
-            self.logger("load_retriver_from_faiss  has Failed", error =str(e))
+            self.logger.error("load_retriver_from_faiss  has Failed", error =str(e))
             raise DocumentPortalException("load_retriver_from_faiss has Failed",sys)
     
-    def invoke(self):
+    def invoke(self,user_input:str) ->str:
         try:
-            pass
+            response= self.chain.invoke(
+                {"input":user_input},
+                config={"configurable":{"session_id":self.session_id}}
+            )
+            answer = response.get("answer","No answer")
+            if not answer:
+                self.logger.warnning("Empty answer recived", sessionid= self.session_id)
+            self.logger.info("Chain invoked sucessfully", sessionid= self.session_id, user_input=user_input, answer_preview= answer[:150])
+            return answer
         except Exception as e:
-            self.logger("invoke  has Failed", error =str(e))
+            self.logger.error("invoke  has Failed", error =str(e))
             raise DocumentPortalException("invoke has Failed",sys)

@@ -12,6 +12,14 @@ from exception.custom_exception import DocumentPortalException
 from logger.custom_struct_logger import CustomStructLogger
 from prompt.prompt_library import PROMPT_REGISTRY
 from model.models import PromptType
+import streamlit as st
+from langchain.schema.runnable import RunnablePassthrough
+from langchain.prompts import ChatPromptTemplate
+load_dotenv()
+LANGCHAIN_TRACING_V2="true"
+LANGCHAIN_ENDPOINT="https://api.smith.langchain.com"
+LANGCHAIN_API_KEY="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"
+LANGCHAIN_PROJECT="rag-pipeline-debug"
 
 class ConversationalRAG:
     def __init__(self, session_id:str, retriever):
@@ -50,9 +58,16 @@ class ConversationalRAG:
             self.logger.error("_load_llm  has Failed", error =str(e))
             raise DocumentPortalException("_load_llm  has Failed",sys)
         
-    def _get_session_history(self,session_id:str):
+    def _get_session_history(self,session_id:str)-> BaseChatMessageHistory:
         try:
-            pass
+            if "store" not in st.session_state:
+                st.session_state.store = {}
+
+            if session_id not in st.session_state.store:
+                st.session_state.store[session_id] = ChatMessageHistory()
+                self.logger.info("New chat session history created", session_id=session_id)
+            history = st.session_state.store[session_id]
+            return history #st.session_state.store[session_id]
         except Exception as e:
             self.logger.error("_get_session_history  has Failed", error =str(e))
             raise DocumentPortalException("_get_session_history has Failed",sys)
@@ -65,23 +80,25 @@ class ConversationalRAG:
             
             vector_store =FAISS.load_local(folder_path=index_path,embeddings=embeddings_model)
             self.logger.info("vector db is loaded sucessfully")
-            return vector_store.as_retriever(search_type ="similarity",search_kwargs={"k",5})
+            return vector_store.as_retriever(search_type ="similarity",search_kwargs={"k":5})
             
         except Exception as e:
             self.logger.error("load_retriver_from_faiss  has Failed", error =str(e))
             raise DocumentPortalException("load_retriver_from_faiss has Failed",sys)
     
-    def invoke(self,user_input:str) ->str:
+    def invoke(self,user_question:str) ->str:
         try:
+            
             response= self.chain.invoke(
-                {"input":user_input},
+                {"input":user_question},
                 config={"configurable":{"session_id":self.session_id}}
             )
             answer = response.get("answer","No answer")
             if not answer:
                 self.logger.warnning("Empty answer recived", sessionid= self.session_id)
-            self.logger.info("Chain invoked sucessfully", sessionid= self.session_id, user_input=user_input, answer_preview= answer[:150])
+            self.logger.info("Chain invoked sucessfully", sessionid= self.session_id, user_input=user_question, answer_preview= answer[:150])
             return answer
         except Exception as e:
             self.logger.error("invoke  has Failed", error =str(e))
             raise DocumentPortalException("invoke has Failed",sys)
+

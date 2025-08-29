@@ -24,7 +24,7 @@ class Singledocingestor:
             self.model_loader= Modelloader()
             self.logger.info("Singledocingestor is intialized", data_path=str(self.data_dir), faiss_path= str(self.faiss_dir) )
         except Exception as e:
-            self.logger("Singledocingestor Intialization has Failed", error =str(e))
+            self.logger.error("Singledocingestor Intialization has Failed", error =str(e))
             raise DocumentPortalException("Singledocingestor Intialization has Failed",sys)
            
     def add_docs(self, files):
@@ -40,10 +40,10 @@ class Singledocingestor:
                 loader =PyPDFLoader(str(temp_path))
                 docs= loader.load()
                 documents.extend(docs)
-            self.log("PDF files loaded", count= len(documents))
+            self.logger.info("PDF files loaded", count= len(documents))
             return self._create_retriver(documents)
         except Exception as e:
-            self.logger("Exception occured in add_docs ", error =str(e))
+            self.logger.error("Exception occured in add_docs ", error =str(e))
             raise DocumentPortalException("Exception occured in add_docs",sys)
         
     def _create_retriver(self,documents):
@@ -54,12 +54,13 @@ class Singledocingestor:
             embedded_model = self.model_loader.load_embeddings()
             vector_store= FAISS.from_documents(documents=docs_splits,embedding=embedded_model)
             vector_store.save_local(str(self.faiss_dir))
-            self.logger("vector store ios saved locally ", saved_path= str(self.faiss_dir))
+            self.logger.info("vector store ios saved locally ", saved_path= str(self.faiss_dir))
             
             retriver = vector_store.as_retriever(search_type ="similarity", search_kwargs={"k":5})
-            self.logger("retriver is created for")
+            self.logger.info("retriver is created for")
             return retriver
         
         except Exception as e:
-            self.logger("exception in _get_retriver", error=str(e))
+            self.logger.error("exception in _get_retriver", error=str(e))
             raise DocumentPortalException("exception in _get_retriver",sys)
+

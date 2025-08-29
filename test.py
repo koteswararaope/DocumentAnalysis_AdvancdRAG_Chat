@@ -31,7 +31,7 @@ except Exception as e:
     raise DocumentPortalException("can not save pdf")"""
     
 ###testing for doc comparison
-from src.doccompare.data_ingestion import DatainjectionComparator
+'''from src.doccompare.data_ingestion import DatainjectionComparator
 from src.doccompare.document_compare import DocumentComparatorusingLLM
 import io
 
@@ -71,4 +71,49 @@ def test_compare_document():
 
 
 if __name__ == "__main__":
-    test_compare_document()
+    test_compare_document()'''
+    
+    
+
+#single document chat
+
+import sys
+from pathlib import Path
+from langchain_community.vectorstores import FAISS
+from src.singledocchat.data_ingestion import Singledocingestor
+from src.singledocchat.retrieval import ConversationalRAG
+from utils.model_loader import Modelloader
+
+FAISS_INDEX_PATH = Path("faiss_index")
+
+def test_coversationalrag_pdf(pdf_path:str, user_question:str):
+    try:
+        module_loader= Modelloader()
+        if FAISS_INDEX_PATH.exists():
+            embeddings= module_loader.load_embeddings()
+            vector_db = FAISS.load_local(folder_path=FAISS_INDEX_PATH,embeddings=embeddings)
+            retriver = vector_db.as_retriever(search_type="similariy", search_kwargs={"k":5})
+        else:
+            with open(pdf_path, "rb") as f:
+                upload_files= [f]
+                docingector = Singledocingestor()
+                retriver = docingector.add_docs(upload_files)
+        
+        session_id= "test_convresationl_rag"
+        rag = ConversationalRAG(session_id=session_id,retriever=retriver)
+        response = rag.invoke(user_question)
+        print("response", response)
+    except Exception as e:
+        print(f"Test failed: {str(e)}")
+        sys.exit(1)
+    
+if __name__ == "__main__":
+    pdf_path = r"C:\Learning\Python\LLM_ops\EndtoEnd\DocumentAnalysis_AdvancdRAG_Chat\data\single_doc_chat\NIPS-2017-attention-is-all-you-need-Paper.pdf"
+    question = "What is the significance of the attention mechanism? can you explain it in simple terms?"
+
+    if not Path(pdf_path).exists():
+        print(f"PDF file does not exist at: {pdf_path}")
+        sys.exit(1)
+    
+# Run the test
+    test_coversationalrag_pdf(pdf_path, question)

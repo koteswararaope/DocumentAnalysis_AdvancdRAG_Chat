@@ -12,4 +12,5 @@ pandas
 langchain-core[tracing]
 pytest
 streamlit
+sentence_transformers
 -e .

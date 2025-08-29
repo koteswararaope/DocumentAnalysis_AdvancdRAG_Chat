@@ -5,7 +5,7 @@ from utils.config_loader import load_config
 
 from langchain_groq import ChatGroq
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 from logger.custom_struct_logger  import CustomStructLogger
 from exception.custom_exception import DocumentPortalException
@@ -38,10 +38,15 @@ class Modelloader:
         try:
             
             embedded_model = self.config["embedding_model"]["model_name"]
-            return GoogleGenerativeAIEmbeddings(model=embedded_model)
+            embeddings=  GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+            #embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+            #test_vec = embeddings.embed_query("Hello world")
+            #print(len(test_vec))
+            return embeddings
         except Exception as e:
             log.error("could not laod embedding model", error = str(e))
             raise DocumentPortalException("could not laod embedding model", sys)
+        
     def load_llm(self):
         """loading LLM
         """

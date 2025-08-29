@@ -37,7 +37,7 @@ contextualize_question_prompt = ChatPromptTemplate.from_messages([
     ("human", "{input}"),
 ])
 
-# Prompt for answering based on context
+
 context_qa_prompt = ChatPromptTemplate.from_messages([
     ("system", (
         "You are an assistant designed to answer questions using the provided context. Rely only on the retrieved "

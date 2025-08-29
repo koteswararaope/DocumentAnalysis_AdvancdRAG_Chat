@@ -88,7 +88,8 @@ class ConversationalRAG:
     
     def invoke(self,user_question:str) ->str:
         try:
-            
+            print("user question:", user_question)
+            print("type of", type(user_question))
             response= self.chain.invoke(
                 {"input":user_question},
                 config={"configurable":{"session_id":self.session_id}}

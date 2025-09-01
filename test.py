@@ -4,7 +4,7 @@ from pathlib import Path
 from src.doc_analyzer.dataingestion import DocumentHandler
 from src.doc_analyzer.dataanalaysis import DocumentAnalyzer
 from exception.custom_exception import DocumentPortalException
-
+import sys
 ##tetsing for document analysis
 """pdf_path= r"C:\\Learning\\Python\\LLM_ops\\EndtoEnd\\DocumentAnalysis_AdvancdRAG_Chat\\data\\document_analysis\\NIPS-2017-attention-is-all-you-need-Paper.pdf"
 
@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
 #single document chat
 
-import sys
+'''import sys
 from pathlib import Path
 from langchain_community.vectorstores import FAISS
 from src.singledocchat.data_ingestion import Singledocingestor
@@ -116,4 +116,46 @@ if __name__ == "__main__":
         sys.exit(1)
     
 # Run the test
-    test_coversationalrag_pdf(pdf_path, question)
+    test_coversationalrag_pdf(pdf_path, question)'''
+    
+    
+# testing for multi doc chat
+from src.multidocchat.data_ingestion import multidocIngestor
+from src.multidocchat.retrieval import ConversationalRAG
+def test_multidoc_rag():
+    try:
+        test_files = [
+            "data\multidoc_chat\market_analysis_report.docx",
+            "data\multidoc_chat\NIPS-2017-attention-is-all-you-need-Paper.pdf",
+            "data\multidoc_chat\sample.pdf",
+            "data\multidoc_chat\state_of_the_union.txt"
+        ]
+        
+        files_to_upload= []
+        for file_path in test_files:
+            if Path((file_path)).exists():
+                files_to_upload.append(open(file_path,"rb"))
+            else:
+                print("files not found in path", path= str(file_path))
+                
+        if not files_to_upload:
+            print("No files to upload")
+            sys.exit(1)
+        
+        ingestor =multidocIngestor()
+        retriever =ingestor.add_docs(files_to_upload)
+        for f in files_to_upload:
+            f.close()
+        
+        sessionid ="test_Miltidoc_chat"
+        rag = ConversationalRAG(session_id=sessionid, retriver=retriever)
+        question= "what is attention is all you neeed paper about?"
+        result=rag.invoke(question)
+        print("answer", result)
+    except Exception as e:
+        print(f"test failed:{str(e)}")
+        sys.exit(1)
+        
+
+if __name__ =="__main__":
+    test_multidoc_rag()

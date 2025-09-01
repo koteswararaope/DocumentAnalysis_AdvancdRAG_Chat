@@ -48,7 +48,6 @@ class ConversationalRAG:
             vector_store= FAISS.load_local(folder_path=index_path,embeddings=embeddings,allow_dangerous_deserialization=True)
             self.retriver = vector_store.as_retriever(search_type= "similarity", search_kwargs={"k":5})
             self.logger.info("retriver is cerated sucessfully")
-            self._build_lcel_chain()
             return self.retriver
         except Exception as e:
             self.logger.error("Exception in load_retriever_faiss", error = str(e))

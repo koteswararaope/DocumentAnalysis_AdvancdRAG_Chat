@@ -56,8 +56,13 @@ class ConversationalRAG:
         
     def invoke(self, user_input:str, chat_history:Optional[List[BaseMessage]]=None)->str:
         try:
-            self.chain.invoke()
-            
+            chat_history =chat_history or []
+            payload= {"input":user_input, "chat_history":chat_history}
+            response =self.chain.invoke(payload)
+            if not response:
+                self.logger.warning("No answer Generated", user_input=user_input, session_id= self.session_id)
+                return "no answer"
+            return response
         except Exception as e:
             self.logger.error("exception in invoke", error = str(e))
             raise DocumentPortalException("exception in invoke",sys)

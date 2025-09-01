@@ -22,7 +22,7 @@ class ConversationalRAG:
    
     def __init__(self, session_id:str, retriver=None):
         try:
-            self.logger = CustomStructLogger(__name__)
+            self.logger = CustomStructLogger().get_logger(__name__)
             self.session_id = session_id
             self.llm = self._load_llm()
             self.context_propmpt: ChatPromptTemplate = PROMPT_REGISTRY[PromptType.CONTEXTUALIZE_QUESTION.value]
@@ -31,8 +31,7 @@ class ConversationalRAG:
                 raise ValueError("Retriver is empty")
             self.retriver = retriver
             self._build_lcel_chain()
-            #self.logger.info("ConversationalRAG is Intialized sucessfully")
-            #self.logger.info("multidocIngestor is intialized", data_path=str(self.data_dir), faiss_path= str(self.faiss_dir) )
+            self.logger.info("ConversationalRAG is Intialized sucessfully")
         except Exception as e:
             self.logger.error("Failed to Inaitalize the ConversationalRAG", error = str(e))
             raise DocumentPortalException("Failed to Inaitalize the ConversationalRAG",sys)
@@ -101,7 +100,7 @@ class ConversationalRAG:
                     |self.llm|
                     StrOutputParser()
                     )
-            #self.logger.info("LCEL chain is created")
+            self.logger.info("LCEL chain is created")
         except Exception as e:
             self.logger.error("exception in _build_lcel_chain", error = str(e))
             raise DocumentPortalException("exception in _build_lcel_chain",sys) 

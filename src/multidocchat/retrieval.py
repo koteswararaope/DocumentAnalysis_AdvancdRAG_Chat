@@ -1,6 +1,7 @@
 
 import sys
 import os
+from typing import List, Optional
 from dotenv import load_dotenv
 from operator import itemgetter
 from langchain_community.vectorstores import FAISS
@@ -13,6 +14,7 @@ import streamlit as st
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.messages import BaseMessage
 load_dotenv()
 
 
@@ -52,9 +54,9 @@ class ConversationalRAG:
             self.logger.error("Exception in load_retriever_faiss", error = str(e))
             raise DocumentPortalException("Exception in load_retriever_faiss",sys)
         
-    def invoke(self):
+    def invoke(self, user_input:str, chat_history:Optional[List[BaseMessage]]=None)->str:
         try:
-            pass
+            self.chain.invoke()
             
         except Exception as e:
             self.logger.error("exception in invoke", error = str(e))

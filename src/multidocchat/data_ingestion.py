@@ -77,7 +77,7 @@ class multidocIngestor:
             text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
             split_docs = text_splitter.split_documents(documents)
             vectorstore = FAISS.from_documents(documents=split_docs,embedding=embedded_model)
-            vectorstore.save_local(str(self.faiss_dir))
+            vectorstore.save_local(str(self.session_fiass_dir))
             self.logger.info("FAISS index is saved locally",path= str(self.faiss_dir))
             retriver = vectorstore.as_retriever(search_type ="similarity", search_args={"k":5})
             return retriver

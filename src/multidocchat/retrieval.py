@@ -98,4 +98,4 @@ class ConversationalRAG:
             self.logger.info("LCEL chain is created")
         except Exception as e:
             self.logger.error("exception in _build_lcel_chain", error = str(e))
-            raise DocumentPortalException("exception in _build_lcel_chain",sys)
+            raise DocumentPortalException("exception in _build_lcel_chain",sys) 

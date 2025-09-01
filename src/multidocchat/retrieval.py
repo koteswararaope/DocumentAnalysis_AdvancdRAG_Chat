@@ -5,8 +5,13 @@ from exception.custom_exception import DocumentPortalException
 from utils.model_loader import Modelloader
 
 class ConversationalRAG:
+   
     def __init__(self):
-        pass 
+        try:
+            pass
+        except Exception as e:
+            self.logger.error("Failed to Inaitalize the ")
+        
     def load_retriever_faiss(self):
         pass
     def invoke(self):

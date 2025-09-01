@@ -20,6 +20,8 @@ src/doccompare/__init__.py
 src/doccompare/data_ingestion.py
 src/doccompare/document_compare.py
 src/multidocchat/__init__.py
+src/multidocchat/data_ingestion.py
+src/multidocchat/retrieval.py
 src/singledocchat/__init__.py
 src/singledocchat/data_ingestion.py
 src/singledocchat/retrieval.py

@@ -13,4 +13,5 @@ langchain-core[tracing]
 pytest
 streamlit
 sentence_transformers
+docx2txt
 -e .

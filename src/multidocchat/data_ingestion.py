@@ -23,7 +23,7 @@ class multidocIngestor:
             self.faiss_dir = Path(faiss_dir)
             self.faiss_dir.mkdir(parents=True, exist_ok=True)
             
-            self.session_id = f"session_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}.pdf"
+            self.session_id = f"session_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
             self.session_temp_dir = self.data_dir/self.session_id
             self.session_fiass_dir= self.faiss_dir/self.session_id
             self.session_temp_dir.mkdir(parents=True, exist_ok=True)
@@ -46,14 +46,14 @@ class multidocIngestor:
                     continue
                 unique_filename= f"{uuid.uuid4().hex[:8]}{ext}"
                 temp_path= self.session_temp_dir/unique_filename
-                
-                with open(temp_path,"rb") as f:
+               # temp_path.mkdir(parents=True, exist_ok=True)
+                with open(temp_path,"wb") as f:
                     f.write(file.read())
                 self.logger.info("file save ", file_name=file.name,saved_as=str(temp_path), session_id= self.session_id)
                 
                 if ext == ".pdf":
                     loader = PyPDFLoader(str(temp_path))
-                elif ext ==".doc":
+                elif ext ==".docx":
                     loader =Docx2txtLoader(str(temp_path))
                 elif ext == ".txt":
                     loader= TextLoader(str(temp_path), encoding="utf-8")

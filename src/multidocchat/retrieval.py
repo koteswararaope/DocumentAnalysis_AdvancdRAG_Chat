@@ -31,8 +31,8 @@ class ConversationalRAG:
                 raise ValueError("Retriver is empty")
             self.retriver = retriver
             self._build_lcel_chain()
-            self.logger.info("ConversationalRAG is Intialized sucessfully")
-            
+            #self.logger.info("ConversationalRAG is Intialized sucessfully")
+            #self.logger.info("multidocIngestor is intialized", data_path=str(self.data_dir), faiss_path= str(self.faiss_dir) )
         except Exception as e:
             self.logger.error("Failed to Inaitalize the ConversationalRAG", error = str(e))
             raise DocumentPortalException("Failed to Inaitalize the ConversationalRAG",sys)
@@ -67,7 +67,7 @@ class ConversationalRAG:
             raise DocumentPortalException("exception in invoke",sys)
     def _load_llm(self):
         try:
-            llm = Modelloader.load_llm()
+            llm = Modelloader().load_llm()
             if not llm:
                 raise ValueError("LLM could not be loaded")
             return llm
@@ -85,7 +85,7 @@ class ConversationalRAG:
     def _build_lcel_chain(self):
         try:
             question_rewriter=(
-                {"item":itemgetter("input"),"chat_history":itemgetter("chat_history")}
+                {"input":itemgetter("input"),"chat_history":itemgetter("chat_history")}
                 |self.context_propmpt
                 |self.llm
                 |StrOutputParser()
@@ -101,7 +101,7 @@ class ConversationalRAG:
                     |self.llm|
                     StrOutputParser()
                     )
-            self.logger.info("LCEL chain is created")
+            #self.logger.info("LCEL chain is created")
         except Exception as e:
             self.logger.error("exception in _build_lcel_chain", error = str(e))
             raise DocumentPortalException("exception in _build_lcel_chain",sys) 

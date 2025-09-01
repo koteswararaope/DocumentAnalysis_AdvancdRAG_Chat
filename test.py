@@ -4,7 +4,8 @@ from pathlib import Path
 from src.doc_analyzer.dataingestion import DocumentHandler
 from src.doc_analyzer.dataanalaysis import DocumentAnalyzer
 from exception.custom_exception import DocumentPortalException
-import sys
+
+
 ##tetsing for document analysis
 """pdf_path= r"C:\\Learning\\Python\\LLM_ops\\EndtoEnd\\DocumentAnalysis_AdvancdRAG_Chat\\data\\document_analysis\\NIPS-2017-attention-is-all-you-need-Paper.pdf"
 
@@ -77,58 +78,60 @@ if __name__ == "__main__":
 
 #single document chat
 
-'''import sys
-from pathlib import Path
-from langchain_community.vectorstores import FAISS
-from src.singledocchat.data_ingestion import Singledocingestor
-from src.singledocchat.retrieval import ConversationalRAG
-from utils.model_loader import Modelloader
+#import sys
+# from pathlib import Path
+# from langchain_community.vectorstores import FAISS
+# from src.singledocchat.data_ingestion import Singledocingestor
+# from src.singledocchat.retrieval import ConversationalRAG
+# from utils.model_loader import Modelloader
 
-FAISS_INDEX_PATH = Path("faiss_index")
+# FAISS_INDEX_PATH = Path("faiss_index")
 
-def test_coversationalrag_pdf(pdf_path:str, user_question:str):
-    try:
-        module_loader= Modelloader()
-        if FAISS_INDEX_PATH.exists():
-            embeddings= module_loader.load_embeddings()
-            vector_db = FAISS.load_local(folder_path=FAISS_INDEX_PATH,embeddings=embeddings)
-            retriver = vector_db.as_retriever(search_type="similariy", search_kwargs={"k":5})
-        else:
-            with open(pdf_path, "rb") as f:
-                upload_files= [f]
-                docingector = Singledocingestor()
-                retriver = docingector.add_docs(upload_files)
+# def test_coversationalrag_pdf(pdf_path:str, user_question:str):
+#     try:
+#         module_loader= Modelloader()
+#         if FAISS_INDEX_PATH.exists():
+#             embeddings= module_loader.load_embeddings()
+#             vector_db = FAISS.load_local(folder_path=FAISS_INDEX_PATH,embeddings=embeddings)
+#             retriver = vector_db.as_retriever(search_type="similariy", search_kwargs={"k":5})
+#         else:
+#             with open(pdf_path, "rb") as f:
+#                 upload_files= [f]
+#                 docingector = Singledocingestor()
+#                 retriver = docingector.add_docs(upload_files)
         
-        session_id= "test_convresationl_rag"
-        rag = ConversationalRAG(session_id=session_id,retriever=retriver)
-        response = rag.invoke(user_question)
-        print("response", response)
-    except Exception as e:
-        print(f"Test failed: {str(e)}")
-        sys.exit(1)
+#         session_id= "test_convresationl_rag"
+#         rag = ConversationalRAG(session_id=session_id,retriever=retriver)
+#         response = rag.invoke(user_question)
+#         print("response", response)
+#     except Exception as e:
+#         print(f"Test failed: {str(e)}")
+#         sys.exit(1)
     
-if __name__ == "__main__":
-    pdf_path = r"C:\Learning\Python\LLM_ops\EndtoEnd\DocumentAnalysis_AdvancdRAG_Chat\data\single_doc_chat\NIPS-2017-attention-is-all-you-need-Paper.pdf"
-    question = "What is the significance of the attention mechanism? can you explain it in simple terms?"
+# if __name__ == "__main__":
+#     pdf_path = r"C:\Learning\Python\LLM_ops\EndtoEnd\DocumentAnalysis_AdvancdRAG_Chat\data\single_doc_chat\NIPS-2017-attention-is-all-you-need-Paper.pdf"
+#     question = "What is the significance of the attention mechanism? can you explain it in simple terms?"
 
-    if not Path(pdf_path).exists():
-        print(f"PDF file does not exist at: {pdf_path}")
-        sys.exit(1)
+#     if not Path(pdf_path).exists():
+#         print(f"PDF file does not exist at: {pdf_path}")
+#         sys.exit(1)
     
-# Run the test
-    test_coversationalrag_pdf(pdf_path, question)'''
+# # Run the test
+#     test_coversationalrag_pdf(pdf_path, question)
     
-    
+
 # testing for multi doc chat
+
+import sys
 from src.multidocchat.data_ingestion import multidocIngestor
 from src.multidocchat.retrieval import ConversationalRAG
 def test_multidoc_rag():
     try:
         test_files = [
-            "data\multidoc_chat\market_analysis_report.docx",
-            "data\multidoc_chat\NIPS-2017-attention-is-all-you-need-Paper.pdf",
-            "data\multidoc_chat\sample.pdf",
-            "data\multidoc_chat\state_of_the_union.txt"
+            r"data\multidoc_chat\market_analysis_report.docx",
+            r"data\multidoc_chat\NIPS-2017-attention-is-all-you-need-Paper.pdf",
+            r"data\multidoc_chat\sample.pdf",
+            r"data\multidoc_chat\state_of_the_union.txt"
         ]
         
         files_to_upload= []
@@ -150,7 +153,7 @@ def test_multidoc_rag():
         sessionid ="test_Miltidoc_chat"
         rag = ConversationalRAG(session_id=sessionid, retriver=retriever)
         question= "what is attention is all you neeed paper about?"
-        result=rag.invoke(question)
+        result=rag.invoke(str(question))
         print("answer", result)
     except Exception as e:
         print(f"test failed:{str(e)}")

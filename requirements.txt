@@ -15,4 +15,5 @@ streamlit
 sentence_transformers
 docx2txt
 pytest
+fastapi
 -e .

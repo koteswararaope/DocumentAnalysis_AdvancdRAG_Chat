@@ -16,4 +16,6 @@ sentence_transformers
 docx2txt
 pytest
 fastapi
+uvicorn
+python-multipart==0.0.20
 -e .

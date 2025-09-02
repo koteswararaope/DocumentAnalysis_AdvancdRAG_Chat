@@ -5,6 +5,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import os
 from typing import List,Optional,Any,Dict
+
+from src.doc_analyzer.dataanalaysis import DocumentAnalyzer
+from src.documentingestion.dataingestion import FaissManager, Dochandler, DocumentComprator, ChatIngestor
 app = FastAPI(title= "Document Portal API", version= "0.1")
 
 app.add_middleware(
@@ -15,8 +18,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/static", StaticFiles(directory="../static"),name="static")
-templates= Jinja2Templates(directory="../templates")
+app.mount("/static", StaticFiles(directory="static"),name="static")
+templates= Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_ui(request:Request):

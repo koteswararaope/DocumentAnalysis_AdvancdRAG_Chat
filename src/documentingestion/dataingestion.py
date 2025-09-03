@@ -16,6 +16,7 @@ from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from utils.file_io import _session_id, save_uploaded_files
 from utils.document_ops import load_documents, concat_for_analysis, concat_for_comparison
+import sys
 
 SUPPORTED_EXTENSIONS={".pdf",".docx",".txt"}
 class FaissManager:
@@ -66,13 +67,18 @@ class FaissManager:
             self._save_meta()
         return len(new_docs)
         
-    def load_or_create(self):
+    def load_or_create(self, text:Optional[List[str]]=None, metadata:Optional[List[dict]]=None):
         if self._exists():
             self.vector_store=FAISS.load_local(
                 str(self.index_dir),
                 self.embeddings,
                 allow_dangerous_deserialization=True
             )
+            return self.vector_store
+        if not text:
+            raise DocumentPortalException("No existing FAISS index and no data to create index",sys)
+        self.vector_store = FAISS.from_texts(texts=text,embedding=self.embeddings,metadatas=metadata or [])
+        self.vector_store.save_local(str(self.index_dir))
         return self.vector_store
 
 class Dochandler:
@@ -249,14 +255,14 @@ class ChatIngestor:
             metas = [c.metadata for c in chunks]
             
             try:
-                vs = fm.load_or_create(texts=texts, metadatas=metas)
+                vectorstore = fm.load_or_create(texts=texts, metadatas=metas)
             except Exception:
-                vs = fm.load_or_create(texts=texts, metadatas=metas)
+                vectorstore = fm.load_or_create(texts=texts, metadatas=metas)
                 
             added = fm.add_documents(chunks)
             self.log.info("FAISS index updated", added=added, index=str(self.faiss_dir))
             
-            return vs.as_retriever(search_type="similarity", search_kwargs={"k": k})
+            return vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": k})
             
         except Exception as e:
             self.log.error("Failed to build retriever", error=str(e))

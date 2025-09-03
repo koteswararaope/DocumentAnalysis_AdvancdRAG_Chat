@@ -15,7 +15,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader, TextLoader
 from langchain_community.vectorstores import FAISS
 
-from utils.model_loader import ModelLoader
+from utils.model_loader import Modelloader
 from logger.custom_struct_logger import CustomStructLogger
 from exception.custom_exception import DocumentPortalException
 

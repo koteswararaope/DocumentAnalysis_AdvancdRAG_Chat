@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Iterable, List, Optional, Dict, Any
-from utils.model_loader import ModelLoader
+from utils.model_loader import Modelloader
 from logger.custom_struct_logger import CustomStructLogger
 from exception.custom_exception import DocumentPortalException
 log = CustomStructLogger().get_logger(__name__)

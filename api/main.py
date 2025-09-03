@@ -58,7 +58,7 @@ async def analyze_documents(file:UploadFile=File(...)):
         saved_path = dh.save_pdf(FastAPIFileAdapter(file))
         text = _read_pdf_via_handler(dh, saved_path)
         analyzer=DocumentAnalyzer()
-        result = analyzer.analyze_document(text)
+        result = analyzer.Analyze_doc(text) 
         return JSONResponse(content=result)
     except HTTPException:
         raise
@@ -72,8 +72,8 @@ async def compare_documents(reference:UploadFile =File(...), actual:UploadFile=F
         ref_path, act_path = dc.save_uploaded_files(FastAPIFileAdapter(reference), FastAPIFileAdapter(actual))
         _ = ref_path, act_path
         combined_text = dc.combine_documents()
-        comp = DocumentComprator()
-        df = comp.compare_documents(combined_text)
+        comp = DocumentComparatorusingLLM()
+        df = comp.comapre_documnets(combined_text)
         return {"rows": df.to_dict(orient="records"), "session_id": dc.session_id}
     except HTTPException:
         raise

@@ -33,7 +33,10 @@ class DocumentComparatorusingLLM:
             }
             self.logger.info("started document comparison", inputs=inputs)
             response= self.chain.invoke(inputs)
-            return self._format_reaponse(response)
+            response_formated= self._format_reaponse(response)
+            self.logger.info("response_formated", output= response_formated)
+            return response_formated
+        
         except Exception as e:
             self.logger.error("comapre_documnets has thrown an exception{e}")
             raise DocumentPortalException("comapre_documnets has thrown an exception",sys)

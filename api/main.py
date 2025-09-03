@@ -46,9 +46,9 @@ class FastAPIFileAdapter:
 
 def _read_pdf_via_handler(handler: Dochandler, path: str) -> str:
     if hasattr(handler, "read_pdf"):
-        return handler.read_pdf(path)  # type: ignore
+        return handler.read_pdf(path)  
     if hasattr(handler, "read_"):
-        return handler.read_(path)  # type: ignore
+        return handler.read_(path)  
     raise RuntimeError("DocHandler has neither read_pdf nor read_ method.")
 
 @app.post("/analyze")
@@ -122,7 +122,7 @@ async def chat(
 
         # Initialize LCEL-style RAG pipeline
         rag = ConversationalRAG(session_id=session_id) #type: ignore
-        rag.load_retriever_from_faiss(index_dir)
+        rag.load_retriever_faiss(index_dir)
 
         # Optional: For now we pass empty chat history
         response = rag.invoke(question, chat_history=[])

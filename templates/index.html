@@ -180,6 +180,7 @@
       url = "http://127.0.0.1:8000/analyze"
       const res = await fetch(url, { method: "POST", body: fd });
       const json = await res.json();
+      console.log("Content in json format", json)
       out.textContent = JSON.stringify(json, null, 2);
      
     });

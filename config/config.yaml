@@ -11,6 +11,12 @@ retriver:
 llm:
   groq:
     provider: "groq"
-    model_name: "qwen/qwen3-32b"
+    model_name: "deepseek-r1-distill-llama-70b"
+    temprature: 0
+    max_output_tokens: 2048
+  
+  google:
+    provider: "google"
+    model_name: "gemini-2.0-flash"
     temprature: 0
     max_output_tokens: 2048

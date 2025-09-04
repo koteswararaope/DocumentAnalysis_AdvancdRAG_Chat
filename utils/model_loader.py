@@ -56,7 +56,8 @@ class Modelloader:
             model_name = self.config["llm"]["groq"]["model_name"]
             temprature = self.config["llm"]["groq"]["temprature"]
             max_output_tokens = self.config["llm"]["groq"]["max_output_tokens"]
-            return ChatGroq(model_name=model_name, temperature=temprature,max_tokens=max_output_tokens)
+            llm = ChatGroq(model_name=model_name, temperature=temprature,max_tokens=max_output_tokens)
+            return llm
         
         except Exception as e:
             log.error("could not load llm", error =str(e))

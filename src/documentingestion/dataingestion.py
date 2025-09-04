@@ -67,7 +67,7 @@ class FaissManager:
             self._save_meta()
         return len(new_docs)
         
-    def load_or_create(self, text:Optional[List[str]]=None, metadata:Optional[List[dict]]=None):
+    def load_or_create(self, texts:Optional[List[str]]=None, metadatas:Optional[List[dict]]=None):
         if self._exists():
             self.vector_store=FAISS.load_local(
                 str(self.index_dir),
@@ -75,9 +75,9 @@ class FaissManager:
                 allow_dangerous_deserialization=True
             )
             return self.vector_store
-        if not text:
+        if not texts:
             raise DocumentPortalException("No existing FAISS index and no data to create index",sys)
-        self.vector_store = FAISS.from_texts(texts=text,embedding=self.embeddings,metadatas=metadata or [])
+        self.vector_store = FAISS.from_texts(texts=texts,embedding=self.embeddings,metadatas=metadatas or [])
         self.vector_store.save_local(str(self.index_dir))
         return self.vector_store
 
@@ -253,7 +253,7 @@ class ChatIngestor:
             
             texts = [c.page_content for c in chunks]
             metas = [c.metadata for c in chunks]
-            
+            print("texts type", type(texts))
             try:
                 vectorstore = fm.load_or_create(texts=texts, metadatas=metas)
             except Exception:

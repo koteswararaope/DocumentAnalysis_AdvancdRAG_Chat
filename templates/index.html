@@ -221,16 +221,16 @@
       if (!files.length) { meta.textContent = "Please upload at least one file."; return; }
       meta.textContent = "Building index…";
       // Example wiring:
-      // const fd = new FormData();
-      // [...files].forEach(f => fd.append("files", f));
-      // fd.append("session_id", sessionId);
-      // fd.append("use_session_dirs", useSession ? "true":"false");
-      // fd.append("chunk_size", chunk); fd.append("chunk_overlap", overlap); fd.append("k", k);
-      // const res = await fetch("/chat/index", { method: "POST", body: fd });
-      // const json = await res.json();
-      // currentSession = json.session_id; meta.textContent = `Indexed. session=${currentSession}`;
+      const fd = new FormData();
+      [...files].forEach(f => fd.append("files", f));
+      fd.append("session_id", sessionId);
+      fd.append("use_session_dirs", useSession ? "true":"false");
+      fd.append("chunk_size", chunk); fd.append("chunk_overlap", overlap); fd.append("k", k);
+      const res = await fetch("/chat/index", { method: "POST", body: fd });
+      const json = await res.json();
+      currentSession = json.session_id; meta.textContent = `Indexed. session=${currentSession}`;
       // For mock:
-      //setTimeout(()=> { currentSession = sessionId || "session_demo_1234"; meta.textContent = `Indexed (mock). session=${currentSession}`; }, 800);
+      setTimeout(()=> { currentSession = sessionId || "session_demo_1234"; meta.textContent = `Indexed (mock). session=${currentSession}`; }, 800);
     });
 
     // CHAT ask (mock wiring; replace with fetch to /chat/query)
@@ -242,16 +242,17 @@
       if (!q) { ans.textContent = "Please enter a question."; return; }
       ans.textContent = "Thinking…";
       // Example wiring:
-      // const fd = new FormData();
-      // fd.append("question", q);
-      // fd.append("session_id", currentSession || "");
-      // fd.append("use_session_dirs", useSession ? "true":"false");
-      // fd.append("k", String(k));
-      // const res = await fetch("/chat/query", { method: "POST", body: fd });
-      // const json = await res.json();
-      // ans.textContent = json.answer || "No answer.";
+      const fd = new FormData();
+      fd.append("question", q);
+      fd.append("session_id", currentSession || "");
+      fd.append("use_session_dirs", useSession ? "true":"false");
+      fd.append("k", String(k));
+      const res = await fetch("/chat/query", { method: "POST", body: fd });
+      const json = await res.json();
+      ans.textContent = json.answer || "No answer.";
+      console.log("text answer", ans.textContent)
       // For mock:
-      setTimeout(()=> { ans.textContent = "This is a mock answer. Plug FastAPI to get real RAG response."; }, 800);
+      //setTimeout(()=> { ans.textContent = "This is a mock answer. Plug FastAPI to get real RAG response."; }, 800);
     });
   </script>
 </body>

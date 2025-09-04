@@ -27,10 +27,10 @@ class ConversationalRAG:
             self.llm = self._load_llm()
             self.context_propmpt: ChatPromptTemplate = PROMPT_REGISTRY[PromptType.CONTEXTUALIZE_QUESTION.value]
             self.qa_prompt:ChatPromptTemplate = PROMPT_REGISTRY[PromptType.CONTEXT_QA.value]
-            if retriver is None:
-                raise ValueError("Retriver is empty")
+            #if retriver is None:
+                #raise ValueError("Retriver is empty")
             self.retriver = retriver
-            self._build_lcel_chain()
+            #self._build_lcel_chain()
             self.logger.info("ConversationalRAG is Intialized sucessfully")
         except Exception as e:
             self.logger.error("Failed to Inaitalize the ConversationalRAG", error = str(e))
@@ -40,13 +40,14 @@ class ConversationalRAG:
         """Load Fiass db and create a retriver
         """
         try:
-            embeddings = Modelloader.load_embeddings()
+            embeddings = Modelloader().load_embeddings()
             
             if not  os.path.isdir(index_path):
                 raise FileNotFoundError("FAISS index directory not found", path= index_path)
             vector_store= FAISS.load_local(folder_path=index_path,embeddings=embeddings,allow_dangerous_deserialization=True)
             self.retriver = vector_store.as_retriever(search_type= "similarity", search_kwargs={"k":5})
             self.logger.info("retriver is cerated sucessfully")
+            self._build_lcel_chain()
             return self.retriver
         except Exception as e:
             self.logger.error("Exception in load_retriever_faiss", error = str(e))

@@ -201,11 +201,7 @@
        console.log("json contenet",json)
       // render rows:
       tbody.innerHTML = json.rows.map(r=>`<tr><td>${r.page ?? ""}</td><td>${r.change ?? ""}</td></tr>`).join("");
-      // For now, mock:
-      //setTimeout(()=>{
-       // const rows = [{page:1, changes:"NO CHANGE"}, {page:2, changes:"Updated section 2.1"}];
-       // tbody.innerHTML = rows.map(r=>`<tr><td>${r.page}</td><td>${r.change}</td></tr>`).join("");
-      //}, 800);
+     
     });
 
     // CHAT build (mock wiring; replace with fetch to /chat/index)

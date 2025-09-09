@@ -8,7 +8,7 @@
             "module": "uvicorn",
             "args": [
                 "api.main:app",          // change if your app is in api/main.py → "api.main:app"
-                "--port", "8000"
+                "--port", "8002"
             ],
             "jinja": true,
             "justMyCode": true

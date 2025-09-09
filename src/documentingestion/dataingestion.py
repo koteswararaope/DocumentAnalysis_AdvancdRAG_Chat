@@ -259,8 +259,8 @@ class ChatIngestor:
             except Exception:
                 vectorstore = fm.load_or_create(texts=texts, metadatas=metas)
                 
-            #added = fm.add_documents(chunks)
-            #self.log.info("FAISS index updated", added=added, index=str(self.faiss_dir))
+            added = fm.add_documents(chunks)
+            self.log.info("FAISS index updated", added=added, index=str(self.faiss_dir))
             
             return vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": k})
             

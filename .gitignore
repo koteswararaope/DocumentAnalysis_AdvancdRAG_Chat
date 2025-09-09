@@ -8,3 +8,5 @@ logs/
 data/
 .env
 .env/
+faiss_index
+faiss_index/

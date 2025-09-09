@@ -10,7 +10,7 @@ from exception.custom_exception import DocumentPortalException
 from logger.custom_struct_logger import CustomStructLogger
 from prompt.prompt_library import PROMPT_REGISTRY
 from model.models import PromptType
-import streamlit as st
+#import streamlit as st
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser

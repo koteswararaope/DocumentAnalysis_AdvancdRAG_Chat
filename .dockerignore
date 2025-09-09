@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.git/
+.gitignore
+*.log
+logs/
+.venv/
+venv/
+faiss_index/
+.vscode/
+src_before refactoring/
+notebook/

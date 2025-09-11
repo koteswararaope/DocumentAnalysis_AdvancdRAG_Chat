@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y build-essential poppler-utils && rm -rf
 # Copy all source code (including setup.py or pyproject.toml)
 COPY . .
 
-COPY .env .
+#COPY .env .
 # Install Python dependencies (including -e .)
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 

@@ -11,7 +11,7 @@ env:
   ECR_REPOSITORY: documentportal
   ECS_SERVICE: document-portal-service
   ECS_CLUSTER: document-portal-cluster
-  ECS_TASK_DEFINITION: .github/workflows/task-definition.json
+  ECS_TASK_DEFINITION: .github/workflows/task_definition.json
   CONTAINER_NAME: document-portal-container
 
 permissions:
@@ -19,17 +19,20 @@ permissions:
   contents: read
 
 jobs:
+  # -------------------------------
+  # 1. Build & Push Docker Image
+  # -------------------------------
   build-and-push:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
     outputs:
-      image: ${{ steps.push-image.outputs.image }}
+      image: ${{ steps.build-image.outputs.image }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -37,17 +40,23 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and Push Docker Image
-        id: push-image
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-          echo "IMAGE_URI=$IMAGE_URI"
+          IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
           echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
 
+  # -------------------------------
+  # 2. Deploy to ECS
+  # -------------------------------
   deploy:
     name: Deploy to ECS Fargate
     needs: build-and-push
@@ -63,16 +72,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Debug Image URI
-        run: |
-          echo "IMAGE_URI: $IMAGE_URI"
-          if [ -z "$IMAGE_URI" ]; then
-            echo "❌ ERROR: Image URI is empty!"
-            exit 1
-          fi
-        env:
-          IMAGE_URI: ${{ needs.build-and-push.outputs.image }}
-
       - name: Render Task Definition
         id: render-task
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -87,7 +86,7 @@ jobs:
           task-definition: ${{ steps.render-task.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+          wait-for-service-stability: false
 
       - name: Done!
-        run: echo "✅ Deployed to ECS Fargate Successfully"
+        run: echo "Deployed to ECS Fargate Successfully"

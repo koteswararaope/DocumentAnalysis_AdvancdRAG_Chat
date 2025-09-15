@@ -81,8 +81,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Debug Image URI
-        run: echo "Built Image URI: ${{ needs.build-and-push.outputs.image }}"
+      
 
       - name: Render Task Definition
         id: render-task

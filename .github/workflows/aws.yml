@@ -54,6 +54,7 @@ jobs:
           docker push $IMAGE_URI
           echo "::add-mask::$IMAGE_URI"
           echo "::set-output name=image::$IMAGE_URI"
+          echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
 
   # -------------------------------
   # 2. Deploy to ECS

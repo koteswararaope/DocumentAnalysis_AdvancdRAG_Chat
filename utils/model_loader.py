@@ -59,17 +59,17 @@ class Modelloader:
     """class to load the embeddings and llm
     """
     def __init__(self):
-        def __init__(self):
-            if os.getenv("ENV", "local").lower() != "production":
-                load_dotenv()
-                self.validate_env()
-                log.info("Running in LOCAL mode: .env loaded")
-            else:
-                log.info("Running in PRODUCTION mode")
+       
+        if os.getenv("ENV", "local").lower() != "production":
+            load_dotenv()
+            self.validate_env()
+            log.info("Running in LOCAL mode: .env loaded")
+        else:
+            log.info("Running in PRODUCTION mode")
             
-            self.api_key_mgr = ApiKeyManager()
-            self.config = load_config()
-            log.info("configuration :", config_keys=list(self.config.keys()))
+        self.api_key_mgr = ApiKeyManager()
+        self.config = load_config()
+        log.info("configuration :", config_keys=list(self.config.keys()))
         
         
     def validate_env(self):
@@ -89,7 +89,7 @@ class Modelloader:
             
             embedded_model = self.config["embedding_model"]["model_name"]
             embeddings=  GoogleGenerativeAIEmbeddings(model="models/embedding-001",
-                                                      GOOGLE_API_KEY=self.api_key_mgr.get("GOOGLE_API_KEY"))
+                                                      google_api_key=self.api_key_mgr.get("GOOGLE_API_KEY"))
             #embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
             #test_vec = embeddings.embed_query("Hello world")
             #print(len(test_vec))
@@ -107,7 +107,7 @@ class Modelloader:
             model_name = self.config["llm"]["groq"]["model_name"]
             temprature = self.config["llm"]["groq"]["temprature"]
             max_output_tokens = self.config["llm"]["groq"]["max_output_tokens"]
-            llm = ChatGroq(model_name=model_name,GROQ_API_KEY=self.api_key_mgr.get("GROQ_API_KEY"),temperature=temprature,max_tokens=max_output_tokens)
+            llm = ChatGroq(model_name=model_name,api_key=self.api_key_mgr.get("GROQ_API_KEY"),temperature=temprature,max_tokens=max_output_tokens)
             return llm
         
         except Exception as e:

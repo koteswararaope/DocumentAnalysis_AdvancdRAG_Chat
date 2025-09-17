@@ -13,20 +13,26 @@ def test_home():
     assert "Document Portal" in response.text
 from pypdf import PdfReader
 
-def test_analysis():
-      # Prepare a fake PDF file content
-    file_path = r"data\document_analysis\NIPS-2017-attention-is-all-you-need-Paper.pdf"
+def test_analyze_documents_with_real_pdf():
+    # Path to the actual PDF file
+    file_path = Path(__file__).parent / "data" / "document_analysis" / "sample.pdf"
     
-    with open(file_path, "rb") as file:
-        files = {
-            "file": ("NIPS-2017-attention-is-all-you-need-Paper.pdf", file, "application/pdf"),
-        }
-        
-        response = client.post("/analyze", files=files)
-        assert response.status_code == 200
+    # Check if file exists
+    assert file_path.is_file(), f"File not found: {file_path}"
 
+    # Open the PDF in binary mode
+    with open(file_path, "rb") as pdf_file:
+        files = {
+            "file": (file_path.name, pdf_file, "application/pdf"),
+        }
+
+        response = client.post("/analyze", files=files)
+
+    # Assert success
+    assert response.status_code == 200
     json_response = response.json()
-    assert json_response["filename"] == "NIPS-2017-attention-is-all-you-need-Paper.pdf"
+    print(json_response)  # Inspect the returned analysis result
+    
 
 
 

@@ -29,14 +29,5 @@ def test_analysis():
     assert json_response["filename"] == "NIPS-2017-attention-is-all-you-need-Paper.pdf"
 
 
-'''def test_analysis11():
-      # Prepare a fake PDF file content
-    file_path = r"data\document_analysis\NIPS-2017-attention-is-all-you-need-Paper.pdf"
-    reader = PdfReader(file_path)
-    full_text = ""
 
-    for page in reader.pages:
-        text = page.extract_text()
-        if text:
-            full_text += text + "\n"'''
 

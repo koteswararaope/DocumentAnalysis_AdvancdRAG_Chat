@@ -11,3 +11,4 @@ data/
 faiss_index
 faiss_index/
 logs/
+log

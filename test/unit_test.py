@@ -13,8 +13,8 @@ def test_home():
     
 def test_analysis():
       # Prepare a fake PDF file content
-    file_path = Path(r"C:\Learning\Python\LLM_ops\EndtoEnd\DocumentAnalysis_AdvancdRAG_Chat\data\document_analysis\NIPS-2017-attention-is-all-you-need-Paper.pdf")
-    file_path = Path(__file__).parent / "data" / "document_analysis" / "NIPS-2017-attention-is-all-you-need-Paper.pdf"
+    file_path = r"C:\Learning\Python\LLM_ops\EndtoEnd\DocumentAnalysis_AdvancdRAG_Chat\data\document_analysis\NIPS-2017-attention-is-all-you-need-Paper.pdf"
+    #file_path = Path(__file__).parent / "data" / "document_analysis" / "NIPS-2017-attention-is-all-you-need-Paper.pdf"
     with open(file_path, "rb") as file:
         files = {
             "file": ("NIPS-2017-attention-is-all-you-need-Paper.pdf", file, "application/pdf"),

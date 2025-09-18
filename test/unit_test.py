@@ -14,7 +14,7 @@ def test_home():
 from pypdf import PdfReader
 
 def test_analyze_documents_with_real_pdf():
-    file_path = "data\document_analysis\Sample.pdf"   # put a small test pdf in your repo
+    file_path = r"data\document_analysis\Sample.pdf"   # put a small test pdf in your repo
 
     with open(file_path, "rb") as f:
         response = client.post(

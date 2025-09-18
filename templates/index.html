@@ -178,6 +178,8 @@
       // Example wiring:
       const fd = new FormData(); fd.append("file", file);
       url = "http://127.0.0.1:8000/analyze"
+      console.log("logging filepath:")
+      console.log("fd:",fd)
       const res = await fetch("/analyze", { method: "POST", body: fd });
       const json = await res.json();
       console.log("Content in json format", json)

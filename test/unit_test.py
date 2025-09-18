@@ -24,7 +24,7 @@ def test_analyze_documents_with_real_pdf():
     with open(file_path, "rb") as f:
         response = client.post(
             "/analyze",
-            files={"file": (file_path, f, "application/pdf")}
+            files={"file": ("Sample.pdf", f, "application/pdf")}
         )
 
     assert response.status_code == 200

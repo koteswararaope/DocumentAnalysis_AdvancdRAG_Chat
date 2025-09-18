@@ -16,7 +16,7 @@ from pypdf import PdfReader
 def test_analyze_documents_with_real_pdf():
     base_dir = os.path.dirname(__file__)  # folder where this test file lives
     file_path = os.path.join(base_dir, "..", "data", "document_analysis", "Sample.pdf")
-    file_path = os.path.abspath(file_path)
+    file_path = r"C:\Learning\Sample.pdf"
     assert os.path.exists(file_path), f"Test file not found: {file_path}"
     with open(file_path, "rb") as f:
         response = client.post(

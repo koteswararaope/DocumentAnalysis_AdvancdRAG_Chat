@@ -14,12 +14,12 @@ def test_home():
 from pypdf import PdfReader
 
 def test_analyze_documents_with_real_pdf():
-    file_path = "data\document_analysis\NIPS-2017-attention-is-all-you-need-Paper.pdf"   # put a small test pdf in your repo
+    file_path = "data\document_analysis\Sample.pdf"   # put a small test pdf in your repo
 
     with open(file_path, "rb") as f:
         response = client.post(
             "/analyze_documents", 
-            files={"file": ("NIPS-2017-attention-is-all-you-need-Paper.pdf", f, "application/pdf")}
+            files={"file": ("Sample.pdff", f, "application/pdf")}
         )
 
     assert response.status_code == 200

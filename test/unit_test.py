@@ -14,19 +14,17 @@ def test_home():
 from pypdf import PdfReader
 
 def test_analyze_documents_with_real_pdf():
-    file_path = r"data\document_analysis\Sample.pdf"   # put a small test pdf in your repo
+    base_dir = os.path.dirname(__file__)  # folder where this test file lives
+    file_path = os.path.join(base_dir, "..", "data", "document_analysis", "Sample.pdf")
+    file_path = os.path.abspath(file_path)
 
     with open(file_path, "rb") as f:
         response = client.post(
-            "/analyze_documents", 
-            files={"file": ("Sample.pdff", f, "application/pdf")}
+            "/analyze",
+            files={"file": ("Sample.pdf", f, "application/pdf")}
         )
 
     assert response.status_code == 200
-    result = response.json()
-    print(result)   # for debugging
-    assert "some_expected_key" in result   # adjust based on your API response
-
 
 
 

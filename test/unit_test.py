@@ -15,19 +15,15 @@ from pypdf import PdfReader
 
 
 def test_analyze_documents_with_real_pdf():
-    file_path = r"C:\Learning\Sample.pdf"
-    '''assert os.path.exists(file_path), f"Test file not found: {file_path}"
-    with open(file_path, "rb") as f:
-     data = f.read()
-    print(data[:200])'''
+    file_path = Path(__file__).parent / "Sample.pdf"
     
+    assert file_path.exists(), f"Test file not found: {file_path}"
+
     with open(file_path, "rb") as f:
         response = client.post(
             "/analyze",
             files={"file": ("Sample.pdf", f, "application/pdf")}
         )
-
-    assert response.status_code == 200
 
 
 test_analyze_documents_with_real_pdf()

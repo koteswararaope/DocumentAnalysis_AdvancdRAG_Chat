@@ -24,6 +24,8 @@ def test_analyze_documents_with_real_pdf():
             "/analyze",
             files={"file": ("Sample.pdf", f, "application/pdf")}
         )
+        assert response.status_code == 200
+        assert "Document Portal" in response.text
 
 
-test_analyze_documents_with_real_pdf()
+

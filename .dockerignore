@@ -13,3 +13,4 @@ faiss_index/
 .vscode/
 src_before refactoring/
 notebook/
+log/

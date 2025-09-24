@@ -5,6 +5,9 @@ from api.main import app   # or your FastAPI entrypoint
 import io, os
 from pathlib import Path
 import logging
+from deepeval.metrics import RougeMetric, BertScoreMetric
+from deepeval.test_case import LLMTestCase
+
 client = TestClient(app)
 
 def test_home():
@@ -40,6 +43,27 @@ def test_analyze_documents_with_real_pdf(monkeypatch):
         
         
     
-
+def test_performance(monkeypatch):
+    file_path = Path(__file__).parent / "Sample.pdf"
+    referencetext= ""
+    
+    assert file_path.exists(), f"Test file not found: {file_path}"
+    
+    with open(file_path, "rb") as f:
+        response = client.post(
+            "/analyze",
+            files={"file": ("Sample.pdf", f, "application/pdf")}
+        )
+        assert response.status_code == 200
+        logging.info("summary of docuemnt", response.text)
+    
+    test_case =LLMTestCase(input=file_path,actual_output=response.text,expected_output=referencetext)
+    rouge = RougeMetric()
+    bestscore =BertScoreMetric()
+    rouge_score= rouge.measure(test_case)
+    best_score=bestscore.measure(test_case)
+    print("rouge score:",rouge_score)
+    print("best score:",best_score)
+    
 
 

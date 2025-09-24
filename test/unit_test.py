@@ -5,7 +5,8 @@ from api.main import app   # or your FastAPI entrypoint
 import io, os
 from pathlib import Path
 import logging
-from deepeval.metrics import RougeMetric, BertScoreMetric
+from deepeval.metrics import BaseMetric,SummarizationMetric
+from deepeval.scorer import scorer
 from deepeval.test_case import LLMTestCase
 
 client = TestClient(app)
@@ -58,12 +59,9 @@ def test_performance(monkeypatch):
         logging.info("summary of docuemnt", response.text)
     
     test_case =LLMTestCase(input=file_path,actual_output=response.text,expected_output=referencetext)
-    rouge = RougeMetric()
-    bestscore =BertScoreMetric()
-    rouge_score= rouge.measure(test_case)
-    best_score=bestscore.measure(test_case)
-    print("rouge score:",rouge_score)
-    print("best score:",best_score)
+    summarization_metric = SummarizationMetric()
+    score = summarization_metric.measure(test_case)
+    print("Summarization Score:", score)
     
 
 

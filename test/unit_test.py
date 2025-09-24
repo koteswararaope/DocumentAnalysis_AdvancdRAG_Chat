@@ -8,6 +8,7 @@ import logging
 from deepeval.metrics import BaseMetric,SummarizationMetric
 from deepeval.scorer import scorer
 from deepeval.test_case import LLMTestCase
+from langchain.document_loaders import PyPDFLoader
 
 client = TestClient(app)
 
@@ -50,6 +51,10 @@ def test_performance(monkeypatch):
     
     assert file_path.exists(), f"Test file not found: {file_path}"
     
+    # Load PDF text
+    loader = PyPDFLoader(str(file_path))
+    docs = loader.load()
+    document_text = " ".join([d.page_content for d in docs])
     with open(file_path, "rb") as f:
         response = client.post(
             "/analyze",
@@ -58,7 +63,7 @@ def test_performance(monkeypatch):
         assert response.status_code == 200
         logging.info("summary of docuemnt", response.text)
     
-    test_case =LLMTestCase(input=file_path,actual_output=response.text,expected_output=referencetext)
+    test_case =LLMTestCase(input=document_text,actual_output=response.text,expected_output=referencetext)
     summarization_metric = SummarizationMetric()
     score = summarization_metric.measure(test_case)
     print("Summarization Score:", score)

@@ -46,7 +46,7 @@ def test_analyze_documents_with_real_pdf(monkeypatch):
     
 def test_performance(monkeypatch):
     file_path = Path(__file__).parent / "Sample.pdf"
-    referencetext= ""
+    referencetext= "attention all you  neeed"
     
     assert file_path.exists(), f"Test file not found: {file_path}"
     

@@ -21,7 +21,7 @@ from pypdf import PdfReader
 @pytest.fixture(autouse=True)
 def set_and_cleanup_env(monkeypatch):
     # Setup: set env vars
-    monkeypatch.setenv("GROQ_API_KEY", "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")
+    monkeypatch.setenv("GROQ_API_KEY", "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")
     monkeypatch.setenv("GOOGLE_API_KEY", "AIzaSyCXxhCtUOLdVsN-1uEvVulsSCNxGNEVkyw")
     # Yield control back to the test
     yield

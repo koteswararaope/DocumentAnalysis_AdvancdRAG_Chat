@@ -44,8 +44,8 @@ def test_analyze_documents_with_real_pdf(monkeypatch):
         logging.info("summary of docuemnt", response.text)
         
         
-    
-def test_performance(monkeypatch):
+#use open AI key to run this test
+'''def test_performance(monkeypatch):
     file_path = Path(__file__).parent / "Sample.pdf"
     referencetext= "attention all you  neeed"
     
@@ -66,7 +66,7 @@ def test_performance(monkeypatch):
     test_case =LLMTestCase(input=document_text,actual_output=response.text,expected_output=referencetext)
     summarization_metric = SummarizationMetric()
     score = summarization_metric.measure(test_case)
-    print("Summarization Score:", score)
+    print("Summarization Score:", score)'''
     
 
 

@@ -12,3 +12,4 @@ faiss_index
 faiss_index/
 logs/
 log
+.deepeval/.deepeval_telemetry.txt

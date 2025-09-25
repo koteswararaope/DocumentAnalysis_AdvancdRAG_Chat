@@ -51,6 +51,10 @@ def _read_pdf_via_handler(handler: Dochandler, path: str) -> str:
         return handler.read_(path)  
     raise RuntimeError("DocHandler has neither read_pdf nor read_ method.")
 
+from deepeval import evaluate
+from deepeval.metrics import SummarizationMetric
+from deepeval.test_case import LLMTestCase
+import json
 @app.post("/analyze")
 async def analyze_documents(file:UploadFile=File(...)):
     try:
@@ -59,7 +63,20 @@ async def analyze_documents(file:UploadFile=File(...)):
         text = _read_pdf_via_handler(dh, saved_path)
         analyzer=DocumentAnalyzer()
         result = analyzer.Analyze_doc(text) 
+        '''using Deep eval for running measuring the performance'''
+        '''result_summary = result['summary']
+        merge_summary = " ".join(result_summary)
+        test_case = LLMTestCase(input=text, actual_output=merge_summary, expected_output="attention all you  neeed")
+        metric = SummarizationMetric(
+            threshold=0.7,
+            model="gpt-4o-mini",
+        )
+
+        metric.measure(test_case)
+        print("metric.score:", metric.score)
+        print("metric.reason:", metric.reason)'''
         return JSONResponse(content=result)
+    
     except HTTPException:
         raise
     except Exception as e:

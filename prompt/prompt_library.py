@@ -48,11 +48,23 @@ context_qa_prompt = ChatPromptTemplate.from_messages([
     ("human", "{input}"),
 ])
 
+guardrail_prompt_template = """
+You are a safety and factual review assistant.
+Input: {answer}
+Sources: {sources}
+
+Task:
+1. Check for unsafe or inappropriate content. Replace if needed.
+2. Ensure factual alignment with sources.
+3. If the answer is unsafe or unverifiable, output: "⚠️ Response blocked due to guardrail."
+4. Otherwise, output the sanitized answer.
+"""
 
 PROMPT_REGISTRY={
     "document_analysis":document_analysis_prompt,
     "document_comparison":document_comparison_prompt,
     "contextualize_question": contextualize_question_prompt,
     "context_qa": context_qa_prompt,
+    "gaurdrail_prompt" : guardrail_prompt_template,
 }
 

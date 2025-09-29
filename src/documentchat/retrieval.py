@@ -28,6 +28,7 @@ class ConversationalRAG:
             self.llm = self._load_llm()
             self.context_propmpt: ChatPromptTemplate = PROMPT_REGISTRY[PromptType.CONTEXTUALIZE_QUESTION.value]
             self.qa_prompt:ChatPromptTemplate = PROMPT_REGISTRY[PromptType.CONTEXT_QA.value]
+            self.gaurdrail_prompt :ChatPromptTemplate = PROMPT_REGISTRY[PromptType.GAURDRAIL_TEMPLATE.value]
             #if retriver is None:
                 #raise ValueError("Retriver is empty")
             self.retriver = retriver
@@ -60,10 +61,11 @@ class ConversationalRAG:
             payload= {"input":user_input, "chat_history":chat_history}
             self.reranking(user_input)
             response =self.chain.invoke(payload)
-            if not response:
+            response_filtered= self.llm_guardrail_fn(response,user_input)
+            if not response_filtered:
                 self.logger.warning("No answer Generated", user_input=user_input, session_id= self.session_id)
                 return "no answer"
-            return response
+            return response_filtered
         except Exception as e:
             self.logger.error("exception in invoke", error = str(e))
             raise DocumentPortalException("exception in invoke",sys)
@@ -115,3 +117,11 @@ class ConversationalRAG:
         scores = reranker_model.predict(pairs)
         reranked = [doc for _, doc in sorted(zip(scores, docs), key=lambda x: x[0], reverse=True)]
         return {"reranked_docs": reranked}
+    
+    def llm_guardrail_fn(self, answer,user_input):
+        docs= self.retriver.get_relevant_documents(user_input)
+        context = "\n\n".join([doc.page_content for doc in docs])
+        #context = "\n\n".join(self.retriver.get_relevant_documents(user_input))
+        prompt_text = self.gaurdrail_prompt.format(answer=answer, sources=context)
+        sanitized = self.llm.invoke(prompt_text).content
+        return sanitized

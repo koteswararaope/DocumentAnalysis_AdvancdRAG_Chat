@@ -58,6 +58,7 @@ class ConversationalRAG:
         try:
             chat_history =chat_history or []
             payload= {"input":user_input, "chat_history":chat_history}
+            self.reranking(user_input)
             response =self.chain.invoke(payload)
             if not response:
                 self.logger.warning("No answer Generated", user_input=user_input, session_id= self.session_id)
@@ -91,10 +92,10 @@ class ConversationalRAG:
                 |self.llm
                 |StrOutputParser()
             )
-            retrive_docs=question_rewriter|self.retriver|self._format_docs
+            self.retrive_docs=question_rewriter|self.retriver|self._format_docs
             self.chain= (
                     {
-                        "context":retrive_docs,
+                        "context":self.retrive_docs,
                         "input":itemgetter("input"),
                         "chat_history":itemgetter("chat_history")
                     }
@@ -108,4 +109,9 @@ class ConversationalRAG:
             raise DocumentPortalException("exception in _build_lcel_chain",sys) 
     
     def reranking(self,user_input:str):
-        cross_encoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+        reranker_model  = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+        docs= self.retriver.get_relevant_documents(user_input)
+        pairs = [(user_input, doc.page_content) for doc in docs]
+        scores = reranker_model.predict(pairs)
+        reranked = [doc for _, doc in sorted(zip(scores, docs), key=lambda x: x[0], reverse=True)]
+        return {"reranked_docs": reranked}

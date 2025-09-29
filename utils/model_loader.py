@@ -7,15 +7,15 @@ from utils.config_loader import load_config
 from langchain_groq import ChatGroq
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.embeddings import HuggingFaceEmbeddings
-
 from logger.custom_struct_logger  import CustomStructLogger
 from exception.custom_exception import DocumentPortalException
-
+from sentence_transformers import SentenceTransformer
+from langchain.embeddings import HuggingFaceEmbeddings
 log = CustomStructLogger().get_logger(__name__)
 
 
 class ApiKeyManager:
-    REQUIRED_KEYS = ["GROQ_API_KEY", "GOOGLE_API_KEY"]
+    REQUIRED_KEYS = ["GROQ_API_KEY", "GOOGLE_API_KEY","HUGGINGFACEHUB_API_TOKEN"]
 
     def __init__(self):
         self.api_keys = {}
@@ -87,12 +87,16 @@ class Modelloader:
         log.info("loading embedding")
         try:
             
-            embedded_model = self.config["embedding_model"]["model_name"]
+            '''embedded_model = self.config["embedding_model"]["model_name"]
             embeddings=  GoogleGenerativeAIEmbeddings(model="models/embedding-001",
-                                                      google_api_key=self.api_key_mgr.get("GOOGLE_API_KEY"))
+                                                      google_api_key=self.api_key_mgr.get("GOOGLE_API_KEY"))'''
+            
             #embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
             #test_vec = embeddings.embed_query("Hello world")
             #print(len(test_vec))
+            model_name= "Qwen/Qwen3-Embedding-0.6B"
+            embeddings = SentenceTransformer(model_name)
+            embeddings = HuggingFaceEmbeddings(model_name=model_name)
             return embeddings
         except Exception as e:
             log.error("could not laod embedding model", error = str(e))

@@ -15,6 +15,7 @@ from langchain.schema.runnable import RunnablePassthrough
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import BaseMessage
+from sentence_transformers import CrossEncoder
 load_dotenv()
 
 
@@ -105,3 +106,6 @@ class ConversationalRAG:
         except Exception as e:
             self.logger.error("exception in _build_lcel_chain", error = str(e))
             raise DocumentPortalException("exception in _build_lcel_chain",sys) 
+    
+    def reranking(self,user_input:str):
+        cross_encoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
